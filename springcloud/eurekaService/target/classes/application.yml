@@ -1,0 +1,9 @@
+server:
+  port: 10086
+spring:
+  application:
+    name: eurekaServer
+eureka:
+  client:
+    service-url: #eureka 的地址信息，eureka自己也会注册到服务中心  127.0.0.1和localhost最大的区别是，127是网卡传输，受防火墙和网卡限制
+      defaultZone: http://localhost:10086/eureka

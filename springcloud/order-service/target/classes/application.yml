@@ -1,0 +1,33 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: orderservice
+  datasource:
+    url: jdbc:mysql://localhost:3306/cloud-order?useSSL=false
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+mybatis:
+  type-aliases-package: cn.itcast.order.pojo
+  configuration:
+    map-underscore-to-camel-case: true
+logging:
+  level:
+    cn.itcast: debug
+  pattern:
+    dateformat: MM-dd HH:mm:ss:SSS
+eureka:
+  client:
+    service-url: #eureka 的地址信息，eureka自己也会注册到服务中心  127.0.0.1和localhost最大的区别是，127是网卡传输，受防火墙和网卡限制
+      defaultZone: http://localhost:10086/eureka
+
+userservice:
+      ribbon:
+        NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule # 负载均衡规则
+
+ribbon:
+        eager-load:
+          enabled: true # 开启饥饿加载
+          clients: # 指定饥饿加载的服务器，如果多个，就回车再加-
+            - userservice
