@@ -1,4 +1,4 @@
-package cn.itcast.order.pojo.response;
+package cn.itcast.pojo.response;
 
 import lombok.Data;
 

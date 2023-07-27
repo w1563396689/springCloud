@@ -1,0 +1,121 @@
+微服务技术
+
+微服务属于分布式架构的一种
+
+
+微服务第一步就是拆分，根据业务功能模块，将一个单体的项目拆分为许多的独立的项目 ，每一个项目称为服务，形成一个服务集群
+
+1. 微服务架构的演变
+
+单体架构，将业务的所有功能集中在一个项目中开发，打成一个包部署
+优点：架构简单，部署成本低，加两集群，形成负载均衡即可
+缺点：耦合度高，不利于大型项目开发
+
+分布式架构，根据业务功能对系统进行拆分，每个业务模块作为独立项目开发，称为一个服务
+优点：耦合度低，有利于服务升级拓展
+缺点：架构非常复杂，运维，监控，部署难度高
+
+
+微服务是一种经过良好架构设计的分布式架构方案，微服务架构特征：
+
+单一职责：微服务拆分力度更小，每一个服务都对应唯一的业务能力，做到单一职责，避免重复业务开发
+面向服务：微服务对外暴露业务接口
+自治：团队独立，技术独立，数据独立，部署独立
+隔离性强：服务调用做好隔离，容错，降级，避免出现级联问题
+ 
+做好高内聚，低耦合
+
+
+微服务这种方案需要技术框架来落地，国内知名的就是springcloud和阿里巴巴的Dubbo
+
+注册中心 +  配置中心 + 服务网关
+                    Dubbo                Springcloud                    SpringcloudAlibaba
+注册中心        zookeeper+redis             Eureka
+服务远程调用    Dubbo协议                   Feign（http协议）
+配置中心        无                          springcloudconfig
+服务网关        无                          springcloudGateway zuul
+服务监控和保护  dubbo-admin 功能弱          Hystrix
+
+springcloud + feign
+
+
+springcloud 集成了各种微服务功能组件，并基于Srpingboot实现了这些组件的自动装配，从而提供了良好的开箱即用体验
+
+微服务拆分注意事项
+
+1.不同微服务，不要重复开发相同业务
+2.微服务数据独立，不要一个微服务访问另一个微服务的数据库
+3.微服务可以将自己的业务暴露成一个接口，供其他微服务调用
+
+不同的服务之间可以通过http进行接口的调用：new RestTemplate().getForObject/postForObject
+getForObject(url, response.class)
+postForObject(url, request, response.class)
+
+
+微服务远程调用的提供者和消费者
+
+服务提供者：一次业务中，被其他微服务调用的服务
+服务消费者：一次业务中，调用其他微服务的服务
+
+
+Eureka
+
+Eureka-server 注册中心 注册和管理微服务
+Eureka 客户端（服务提供者和服务消费者）
+1.每一个服务时，在启动时都会先注册服务信息
+2.消费者通过eureka拉取其他提供者服务信息
+3.多个提供者，消费者如果选择？消费者利用负载均衡算法，从多个中选择一个
+4.消费者远程调用提供者服务
+（eureka每30s会进行一次心跳检测）
+
+nacos 单机启动 
+
+./...cmd -m standlone
+
+将配置交给nacos管理的步骤
+1.在nacos中添加配置文件
+2.在微服务中引入nacos的config依赖
+3.在微服务中添加bootstrap.yaml，这个文件会优先application.yml加载，配置了nacos地址，当前环境，服务名称，文件后缀名，这些决定了程序启动时去nacos读取哪个配置文件
+
+使用nacos实现配置文件的热更新
+1.使用@Value注解，结合@RefreshScope来刷新配置
+2.使用ConfigurationProperties注入，自动刷新
+
+配置文件的优先级
+服务名-profile.yaml >  服务名.yaml > application.yml
+
+针对feign 老系统采用是gradle管理的方式
+
+dependencies{
+    complile project(":shared")
+
+    complile "org.springframework.cloud:spring-cloud-starter-feign"
+}
+
+更改feign配置有两种方式，一种是创建一个configuration，一种是使用yml配置，配置要高于代码
+
+feign的性能优化
+
+
+Feign是一个声明式的客户端，它的底层实现是：
+URLConnection：默认实现，不支持连接池
+Apache HttpClient： 支持连接池
+OKHttp： 支持连接池
+
+命令式编程：编程者需要告诉机器一连串命令，“命令”机器如何做，最终达到用户的目的，比如Clang。
+申明式编程：编程者只需告诉机器自己想要什么，不用关心机器在达成这个目标需要的执行细节，比如SQL、函数式编程。
+
+优化性能：
+1.使用连接池代替默认的URLConnection
+2.日志级别，最好是使用basic或none
+
+feign的最佳实现
+
+老网贷使用的是feignCilent单独抽出一个服务，写一个service继承cbMessageService这些接口的功能，实现接口里面实际就是feign客户端的实现。即CCFeignMessageServiceAdapter(feignClient) CCFeignMessageServiceFallbacnkFactory(实现feign客户端)
+就是什么createErrorResponse（）这些
+
+统一网关GateWay
+为什么需要网关：身份认证和权限校验；服务路由，负载均衡；请求限流
+
+在springcloud中网关的实现包括两种 gateway和zuul
+zuul是基于servlet的实现，属于阻塞式编程，而SpringCloudGateway则是基于spring5中提供的WebFlux，基于响应式的编程的实现，具备更好的性能

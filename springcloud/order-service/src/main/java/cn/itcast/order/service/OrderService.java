@@ -1,6 +1,6 @@
 package cn.itcast.order.service;
 
-import cn.itcast.order.pojo.response.OrderResponse;
+import cn.itcast.pojo.response.OrderResponse;
 
 public interface OrderService {
 

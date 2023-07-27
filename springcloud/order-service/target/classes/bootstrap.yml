@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: orderservice
+  profiles:
+    active: dev #环境
+
+  cloud:
+    nacos:
+      server-addr: localhost:80
+      discovery:
+        username: nacos
+        password: nacos
+      config:
+        file-extension: yaml

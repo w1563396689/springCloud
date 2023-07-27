@@ -12,6 +12,9 @@
     <module>eurekaService</module>
     <module>order-service</module>
     <module>user-service</module>
+      <module>feign-api</module>
+      <module>order-service-api</module>
+      <module>user-service-api</module>
   </modules>
 
   <name>springcloud</name>
@@ -41,6 +44,14 @@
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-dependencies</artifactId>
         <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- nacos的驱动 -->
+      <dependency>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+        <version>2.2.5.RELEASE</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

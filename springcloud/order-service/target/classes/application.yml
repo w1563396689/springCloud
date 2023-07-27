@@ -8,6 +8,15 @@ spring:
     username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
+#  cloud:
+#    nacos:
+#      server-addr: localhost:8848
+#      discovery:
+#        cluster-name: BJ #集群名称
+#        ephemeral: false #设置临时实例 默认是true 临时的
+#        namespace: 1e1f52d4-36f5-4d85-9f8c-3d81ab7b850b # 命名空间id
+#        username: nacos
+#        password: nacos
 mybatis:
   type-aliases-package: cn.itcast.order.pojo
   configuration:
@@ -17,17 +26,29 @@ logging:
     cn.itcast: debug
   pattern:
     dateformat: MM-dd HH:mm:ss:SSS
-eureka:
-  client:
-    service-url: #eureka 的地址信息，eureka自己也会注册到服务中心  127.0.0.1和localhost最大的区别是，127是网卡传输，受防火墙和网卡限制
-      defaultZone: http://localhost:10086/eureka
+#eureka:
+#  client:
+#    service-url: #eureka 的地址信息，eureka自己也会注册到服务中心  127.0.0.1和localhost最大的区别是，127是网卡传输，受防火墙和网卡限制
+#      defaultZone: http://localhost:10086/eureka
 
 userservice:
       ribbon:
-        NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule # 负载均衡规则
+        NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
+#        NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule # 负载均衡规则 随机规则
 
 ribbon:
         eager-load:
           enabled: true # 开启饥饿加载
           clients: # 指定饥饿加载的服务器，如果多个，就回车再加-
             - userservice
+
+feign:
+  client:
+    config:
+      default: #这里可以填写对应的service的名字，就缩小了范围，default默认指所有的服务
+        loggerLevel: NONE
+
+  httpclient:
+    enable: true # 支持httpclient的开关
+    max-connection: 200  # 最大连接数
+    max-connection-per-route: 50 # 单个路径支持的最大连接数
