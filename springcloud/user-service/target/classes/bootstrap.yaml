@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: userservice
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      server-addr: localhost:80
+      discovery:
+        username: nacos
+        password: nacos
+
+      config:
+        file-extension: yaml

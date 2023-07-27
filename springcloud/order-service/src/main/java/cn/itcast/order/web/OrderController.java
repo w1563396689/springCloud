@@ -1,8 +1,7 @@
 package cn.itcast.order.web;
 
-import cn.itcast.order.pojo.entity.Order;
-import cn.itcast.order.pojo.response.OrderResponse;
 import cn.itcast.order.service.OrderService;
+import cn.itcast.pojo.response.OrderResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

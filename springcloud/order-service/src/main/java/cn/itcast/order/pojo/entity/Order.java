@@ -1,6 +1,5 @@
 package cn.itcast.order.pojo.entity;
 
-import cn.itcast.order.pojo.response.OrderResponse;
 import lombok.Builder;
 import lombok.Data;
 
